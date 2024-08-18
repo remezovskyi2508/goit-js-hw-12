@@ -12,7 +12,6 @@ const input = document.querySelector('#searchImg');
 const listImages = document.querySelector('.list-images');
 const loader = document.querySelector('.loader');
 const moreBtn = document.querySelector('#moreBtn');
-const imgItem = document.querySelector('photo-item');
 
 const gallery = new SimpleLightbox('.list-images a', {
   captionsData: 'alt',
@@ -21,6 +20,7 @@ const gallery = new SimpleLightbox('.list-images a', {
 let page = 1;
 let totalLoadedImages = 0;
 let currentQuery = '';
+let totalHits = 0;
 
 form.addEventListener('submit', e => {
   e.preventDefault();
@@ -28,8 +28,9 @@ form.addEventListener('submit', e => {
   loader.style.display = 'block';
   currentQuery = input.value.trim();
 
-  fetchImages(input)
+  fetchImages(currentQuery)
     .then(photos => {
+      totalHits = photos.totalHits;
       if (photos.hits.length === 0) {
         iziToast.error({
           timeout: 2500,
@@ -55,11 +56,11 @@ form.addEventListener('submit', e => {
   input.value = '';
 });
 
-moreBtn.addEventListener('click', async => {
+moreBtn.addEventListener('click', () => {
   page += 1;
   loader.style.display = 'block';
 
-  fetchImages({ value: currentQuery }, page)
+  fetchImages(currentQuery, page)
     .then(photos => {
       totalLoadedImages += photos.hits.length;
       if (totalLoadedImages >= photos.totalHits) {
@@ -75,14 +76,17 @@ moreBtn.addEventListener('click', async => {
       listImages.insertAdjacentHTML('beforeend', markup);
       gallery.refresh();
       loader.style.display = 'none';
+
+      const imgItem = document.querySelector('.photo-item');
+      const cardHeight = imgItem.getBoundingClientRect().height;
+
+      window.scrollBy({
+        top: cardHeight * 2,
+        behavior: 'smooth',
+      });
     })
     .catch(error => {
       console.log(error);
       loader.style.display = 'none';
     });
-  
-  window.scrollBy({
-    top: 400,
-    behavior: 'smooth',
-  });
 });
