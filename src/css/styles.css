@@ -129,6 +129,10 @@ button:hover {
   font-size: 12px;
   line-height: 16px;
 }
+#moreBtn{
+  display: none;
+  margin: 0 auto;
+}
 
 .loader {
   display: none;
