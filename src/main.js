@@ -27,6 +27,7 @@ form.addEventListener('submit', e => {
   listImages.innerHTML = '';
   loader.style.display = 'block';
   currentQuery = input.value.trim();
+  page = 1;
 
   fetchImages(currentQuery)
     .then(photos => {
@@ -39,14 +40,17 @@ form.addEventListener('submit', e => {
             'Sorry, there are no images matching your search query. Please try again!',
         });
         loader.style.display = 'none';
+        moreBtn.style.display = 'none';
         return;
       } else {
         const markup = imgList(photos.hits);
         listImages.innerHTML = markup;
         totalLoadedImages = photos.hits.length;
+        moreBtn.style.display =
+          photos.totalHits > photos.hits.length ? 'flex' : 'none';
         loader.style.display = 'none';
         gallery.refresh();
-        moreBtn.style.display = 'flex';
+        console.log(totalLoadedImages);
       }
     })
     .catch(error => {
@@ -55,6 +59,8 @@ form.addEventListener('submit', e => {
         position: 'topRight',
         message: `Error: ${error.message || 'Something went wrong'}`,
       });
+      loader.style.display = 'none';
+      moreBtn.style.display = 'none';
     });
   input.value = '';
 });
@@ -66,7 +72,6 @@ moreBtn.addEventListener('click', () => {
 
   fetchImages(currentQuery, page)
     .then(photos => {
-      totalLoadedImages += photos.hits.length;
       if (totalLoadedImages >= photos.totalHits) {
         iziToast.error({
           position: 'topRight',
@@ -75,6 +80,8 @@ moreBtn.addEventListener('click', () => {
         loader.style.display = 'none';
         return;
       }
+      totalLoadedImages += photos.hits.length; // change position of this code after checking totalLoadedImages
+
       const markup = imgList(photos.hits);
       listImages.insertAdjacentHTML('beforeend', markup);
       gallery.refresh();
@@ -97,5 +104,6 @@ moreBtn.addEventListener('click', () => {
         message: `Error: ${error.message || 'Something went wrong'}`,
       });
       loader.style.display = 'none';
+      moreBtn.style.display = 'flex';
     });
 });
