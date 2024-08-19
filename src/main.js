@@ -50,7 +50,11 @@ form.addEventListener('submit', e => {
       }
     })
     .catch(error => {
-      console.log(error);
+      iziToast.error({
+        timeout: 2500,
+        position: 'topRight',
+        message: `Error: ${error.message || 'Something went wrong'}`,
+      });
     });
   input.value = '';
 });
@@ -87,7 +91,11 @@ moreBtn.addEventListener('click', () => {
       });
     })
     .catch(error => {
-      console.log(error);
+      iziToast.error({
+        timeout: 2500,
+        position: 'topRight',
+        message: `Error: ${error.message || 'Something went wrong'}`,
+      });
       loader.style.display = 'none';
     });
 });
