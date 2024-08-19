@@ -39,7 +39,6 @@ form.addEventListener('submit', e => {
             'Sorry, there are no images matching your search query. Please try again!',
         });
         loader.style.display = 'none';
-
         return;
       } else {
         const markup = imgList(photos.hits);
@@ -59,6 +58,7 @@ form.addEventListener('submit', e => {
 moreBtn.addEventListener('click', () => {
   page += 1;
   loader.style.display = 'block';
+  moreBtn.style.display = 'none';
 
   fetchImages(currentQuery, page)
     .then(photos => {
@@ -69,13 +69,14 @@ moreBtn.addEventListener('click', () => {
           message: "We're sorry, but you've reached the end of search results.",
         });
         loader.style.display = 'none';
-        moreBtn.style.display = 'none';
         return;
       }
       const markup = imgList(photos.hits);
       listImages.insertAdjacentHTML('beforeend', markup);
       gallery.refresh();
       loader.style.display = 'none';
+
+      moreBtn.style.display = 'flex';
 
       const imgItem = document.querySelector('.photo-item');
       const cardHeight = imgItem.getBoundingClientRect().height;

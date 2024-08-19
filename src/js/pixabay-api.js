@@ -5,7 +5,7 @@ const fetchImages = async (input, page = 1) => {
 
   const searchParams = new URLSearchParams({
     key: '45320962-957458a2920d861910609dde6',
-    q: `${input.value.trim()}`,
+    q: `${input}`,
     image_type: 'photo',
     orientation: 'horizontal',
     safesearch: true,
