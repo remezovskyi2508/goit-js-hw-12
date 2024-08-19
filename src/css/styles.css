@@ -101,7 +101,7 @@ button:hover {
 }
 
 .list-images {
-  margin-top: 32px;
+  margin: 32px 0;
   display: flex;
   flex-wrap: wrap;
   gap: 24px;
@@ -162,7 +162,7 @@ button:hover {
   transform: translateX(-50%);
 }
 .loader::after {
-  content: 'Loading';
+  content: 'Loading images, please wait...';
   position: absolute;
   left: 0;
   top: 0;
@@ -172,6 +172,7 @@ button:hover {
   overflow: hidden;
   box-sizing: border-box;
   animation: animloader 6s linear infinite;
+  z-index: 1;
 }
 
 @keyframes animloader {
