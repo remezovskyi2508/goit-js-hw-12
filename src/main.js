@@ -32,6 +32,8 @@ form.addEventListener('submit', e => {
   fetchImages(currentQuery)
     .then(photos => {
       totalHits = photos.totalHits;
+      const totalPages = Math.ceil(totalHits / 15);
+
       if (photos.hits.length === 0) {
         iziToast.error({
           timeout: 2500,
@@ -42,16 +44,13 @@ form.addEventListener('submit', e => {
         loader.style.display = 'none';
         moreBtn.style.display = 'none';
         return;
-      } else {
-        const markup = imgList(photos.hits);
-        listImages.innerHTML = markup;
-        totalLoadedImages = photos.hits.length;
-        moreBtn.style.display =
-          photos.totalHits > photos.hits.length ? 'flex' : 'none';
-        loader.style.display = 'none';
-        gallery.refresh();
-        console.log(totalLoadedImages);
       }
+      const markup = imgList(photos.hits);
+      listImages.innerHTML = markup;
+      totalLoadedImages = photos.hits.length;
+      moreBtn.style.display = page < totalPages ? 'flex' : 'none';
+      loader.style.display = 'none';
+      gallery.refresh();
     })
     .catch(error => {
       iziToast.error({
@@ -72,23 +71,24 @@ moreBtn.addEventListener('click', () => {
 
   fetchImages(currentQuery, page)
     .then(photos => {
-      if (totalLoadedImages >= photos.totalHits) {
-        iziToast.error({
-          position: 'topRight',
-          message: "We're sorry, but you've reached the end of search results.",
-        });
-        loader.style.display = 'none';
-        return;
-      }
-      totalLoadedImages += photos.hits.length; // change position of this code after checking totalLoadedImages
-
+      totalLoadedImages += photos.hits.length;
+      const totalPages = Math.ceil(totalHits / 15);
+      
       const markup = imgList(photos.hits);
       listImages.insertAdjacentHTML('beforeend', markup);
       gallery.refresh();
       loader.style.display = 'none';
 
-      moreBtn.style.display = 'flex';
-
+      if (page >= totalPages || totalLoadedImages >= totalHits) {
+        iziToast.error({
+          position: 'topRight',
+          message: "We're sorry, but you've reached the end of search results.",
+        });
+        moreBtn.style.display = 'none';
+      } else {
+        moreBtn.style.display = 'flex';
+      }
+      
       const imgItem = document.querySelector('.photo-item');
       const cardHeight = imgItem.getBoundingClientRect().height;
 
